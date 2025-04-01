@@ -1,0 +1,12 @@
+rules:
+  - id: sql-injection-java
+    languages: [java]
+    patterns:
+      - pattern: |
+          $STMT.execute($QUERY);
+      - pattern-inside: |
+          $STMT = $CONN.createStatement();
+          ...
+    message: 'Possible SQL Injection vulnerability detected in Java.'
+    severity: ERROR
+
