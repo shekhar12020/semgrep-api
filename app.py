@@ -23,21 +23,26 @@ def analyze_code():
         # Run Semgrep analysis
         command = [
             'semgrep',
-            '--config', './semgrep_rules.yml',
+            '--config', './semgrep_java_rules.yml',
             '--json',
+            '--quiet',  # suppress banner/logs
+            '--no-git-ignore',
             filepath
         ]
         result = subprocess.run(command, capture_output=True, text=True)
 
-        if result.returncode == 0:
-            # Format the JSON results properly
-            findings = json.loads(result.stdout)
+        try:
+            findings = json.loads(result.stdout.strip())
             return jsonify({
                 "status": "success",
                 "results": findings
             })
-        else:
-            return jsonify({"error": "Semgrep encountered an error."}), 500
+        except json.JSONDecodeError:
+            return jsonify({
+                "error": "Failed to parse Semgrep JSON output.",
+                "raw_stdout": result.stdout,
+                "stderr": result.stderr
+            }), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -46,7 +51,5 @@ def analyze_code():
         if os.path.exists(filepath):
             os.remove(filepath)
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
-

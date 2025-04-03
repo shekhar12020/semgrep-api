@@ -1,0 +1,114 @@
+rules:
+
+  # Rule 1: Discourage System.out.println
+  - id: avoid-system-out
+    languages: [java]
+    pattern: System.out.println(...);
+    message: "Avoid System.out.println — use a logger instead."
+    severity: WARNING
+
+  # Rule 2: Avoid empty catch blocks
+  - id: no-empty-catch
+    languages: [java]
+    pattern: |
+      try {
+        ...
+      } catch ($EXC $E) {
+      }
+    message: "Empty catch blocks should be avoided."
+    severity: WARNING
+
+  # Rule 3: Method exceeds 30 lines
+  - id: large-method
+    languages: [java]
+    pattern: |
+      public $RETURNTYPE $METHOD(...) {
+        ...
+      }
+    max-lines: 30
+    message: "Method is too long. Consider breaking it into smaller pieces."
+    severity: INFO
+
+  # Rule 4: Deep nesting
+  - id: deep-nesting
+    languages: [java]
+    pattern: |
+      if (...) {
+        if (...) {
+          if (...) {
+            ...
+          }
+        }
+      }
+    message: "Avoid deep nesting — use early returns or refactor."
+    severity: INFO
+
+  # Rule 5: Missing @Override
+  - id: missing-override
+    languages: [java]
+    pattern: |
+      public $RETURNTYPE $METHOD(...) {
+        ...
+      }
+    message: "Missing @Override — add it if overriding a method."
+    severity: WARNING
+
+  # Rule 6: Too many parameters
+  - id: long-parameter-list
+    languages: [java]
+    pattern: |
+      public $RETURNTYPE $METHOD($P1, $P2, $P3, $P4, $P5, ...) {
+        ...
+      }
+    message: "Too many parameters — consider using a parameter object or builder."
+    severity: INFO
+
+  # Rule 7: Avoid Thread.sleep
+  - id: avoid-thread-sleep
+    languages: [java]
+    pattern: Thread.sleep(...);
+    message: "Avoid Thread.sleep — use ScheduledExecutorService or wait/notify if appropriate."
+    severity: WARNING
+
+  # Rule 8: Avoid hardcoded TODOs in production
+  - id: avoid-todo
+    languages: [java]
+    pattern: |
+      // TODO ...
+    message: "Remove TODOs before committing to production."
+    severity: INFO
+
+  # Rule 9: Prevent static access to instance methods
+  - id: static-access-instance
+    languages: [java]
+    pattern: ClassName.$METHOD(...);
+    message: "Avoid accessing instance methods via class name — use an object instance instead."
+    severity: WARNING
+
+  # Rule 10: Ensure logger is used for errors
+  - id: error-without-logger
+    languages: [java]
+    pattern: |
+      catch ($E) {
+        $ANYTHING;
+      }
+    message: "Consider logging the exception in catch blocks."
+    severity: WARNING
+
+  # Rule 11: Discourage magic numbers
+  - id: avoid-magic-numbers
+    languages: [java]
+    pattern: |
+      if ($X == 42) {
+        ...
+      }
+    message: "Avoid magic numbers — use named constants instead."
+    severity: INFO
+
+  # Rule 12: Block controller-to-repo direct calls (architecture)
+  - id: controller-direct-repo
+    languages: [java]
+    pattern: |
+      controller.$METHOD(...).repository.$REPO(...);
+    message: "Avoid calling repositories directly from controllers — use service layer."
+    severity: WARNING
